@@ -1,0 +1,176 @@
+1. Installing 
+npm i bcrypt cloudinary cookie-parser cors dotenv express express-fileupload jsonwebtoken mongoose validator
+bcrypt -> for hashing user password 
+cloudinary -> resume upload -> in image form 
+cookie parser -> cookie stored for user authentication 
+cors-> connect frontend and backend 
+dotenv -> environment variables 
+express -> node framework
+jwt -> created when user login 
+mongoose -> for db 
+validator -> for email validation 
+
+
+2. Create folders 
+ -> config -> for storing environment variables 
+ -> controllers -> for creating user route , application controller , job controller , user controller  functions stored here 
+ -> database -> for db connection 
+ -> middlewares -> for authentication , error , catch-sync error 
+ -> models -> creating schema here 
+-> routes 
+-> utils 
+
+3. insider server.js -> 
+app.listen(process.env.PORT,()=>{
+    console.log(`server running on port ${process.env.PORT}`);
+}); 
+the process.env.PORT is defined inside config folder 
+
+-> also set up cloudinary here
+-> https://console.cloudinary.com/pm/c-30b856ee07a827dcaeb8382adf623f/developer-dashboard
+
+
+
+4. download mongodb 
+
+5. in config.env -> add all the keys and jwt key and expiry time 
+
+6. inside middlewares folder -> create error.js file 
+ -> handling different types of error inside error.js 
+
+7. inside models folder -> create userSchema.js file and define schema 
+-> creating schema for the user 
+-> for hashing password 
+-> creating json web tokens 
+
+
+8. inside controller folder -> create userController.js 
+-> create three method user register , login and logout 
+-> for logout delete the user cookie stored by us in local storage 
+-> in logout check for user authorized or not -> if user already logged out it has no token with him , than he can't logout again as he his not authorized now 
+-> check user authentication in logout [***********imp*************]
+
+
+9. use postman app -> make required post request for registering user 
+
+
+10. inside models folder -> create JobSchema.js 
+-> in model we basically define the schema of our backend and than define the routes 
+-> create model for jobSchema than we will create the routes 
+
+11. inside controller folder -> create jobController.js 
+
+12. inside jobRoute.js 
+
+import express from "express";
+import {deleteJob, getAllJobs, getmyJobs, getSinglejob, postJob, updateJob} from '../controllers/JobController.js';
+import { isAuthoried } from "../middlewares/auth.js";
+
+const router=express.Router();
+router.get("/getall",getAllJobs);
+router.post("/post",isAuthoried,postJob);
+router.get("/getmyjobs",isAuthoried,getmyJobs);
+router.put("/update/:id",isAuthoried,updateJob);
+router.delete("/delete/:id",isAuthoried,deleteJob);
+router.get("/:id",isAuthoried,getSinglejob);
+export default router;
+
+12. define all the function inside jobController.js  
+
+
+13. Note before posting jobs using postJob of jobController.js make sure user is also login else 
+  error that user not authorized comes as we call -> router.post("/post",isAuthoried,postJob); 
+  isAuthoried function for user authorization 
+
+-> test postJob for jobSeeker -> user authorization -> it should give error, only Employeer can postJob
+ 
+
+14. for updateJob -> employeer role only has the access 
+
+
+15. inside controller , models folder -> create applicationController.js & applicationSchema.js
+
+
+
+16. make the applicationSchema now 
+
+17. inside applicationController.js 
+-> how will 1 employeer get all the application of employeer
+-> every job-seeker can also see where they have applied for 
+-> every job seeker has been allowed to delete there application where they have applied , but employeer can't delete the job seeker application 
+-> post a application -> uses file handling , file stored in cloudinary -> do it properly , resume kept in png format 
+as cloudinary doesn't allow to access the pdf file in frontend although we can store there pdf file 
+
+
+18. than create the router for the application
+
+******** BACKEND COMPLETE ************ 
+-> application controller -> job seeker , employeer can see all his application 
+-> job seeker can delete his application 
+-> post application uses cloudinary 
+
+-> in job controller -> crud operation on jobs 
+
+-> in user controllers -> user can see there details -> register , login , logout 
+
+-> data base -> we use mongo db compass a gui of monogo db 
+
+-> in middlewares -> 
+-> catch async error.js -> synchronous and asynchronous error handled 
+-> authentication and some error handling 
+
+-> in models -> we create schema of job , user and application 
+
+-> in utils -> some work on jwt tokens 
+
+-> app.js -> simply connect all jobs,application and user routers 
+
+
+************************************ FRONTEND SECTION START ****************************************** 
+
+-> install node modules using npm install along with npm create vite@latest ./ 
+-> create the file structure as follow 
+
+-> folders created 
+
+inside src folder 
+
+1. components folder created 
+ inside components create following folder 
+   1. Auth -> for user authentication 
+   2. Home -> where home page all components are created 
+   3. Job -> where all job routes are created 
+   4. Layout-> footer and navbar are created here 
+   5. NotFound -> 404 not found page created here 
+   6. Application 
+	
+1. inside Application folder 
+create Application.jsx -> to create form for submitting application created here 
+MyApplication.jsx -> if i am a job seeker i will be able to see my application , if i am a employeer i will be able to see my applicants application 
+ResumeModal.jsx -> resume submitted by job seeker in png/jpeg/web format -> shows the resume 
+
+2. inside auth -> login.jsx and register.jsx for sign up components are created 
+
+3. inside home -> home.jsx and 3 more 
+
+4. inside job folder -> jobDetails.jsx here details of job are stored and jobs.jsx (all jobs shown / rendered here which are not expired) 
+                     -> MyJobs.jsx -> if employeer shown only jobs created by employeer and applicants cant access it as they are not authorized 
+
+5. inside layout -> dynamic nav bar -> separate nav bar for employeer and job- seeker created 
+
+install dependency ->  npm i react-router-dom axios react-icons 
+
+
+Now, go to each file and create a proper components i.e frontend and integrate backend router for various function like :- register , login , logout , jobs etc 
+
+-> working on NotFound.jsx first 
+-> than working on Auth and creating register and login page 
+-> than working upon home page details and all of its 5 sub pages 
+-> than working upon job section and its sub pages 
+---> postJob -> tricky in both backend and frontend 
+
+-> JOB PAGE HAS 2 VIEWS -> ONE FOR EMPLOYEER AND OTHER FOR JOB-SEEKER 
+
+-> for working on JOB-SEEKER SIDE VIEW -> WORK ON APPLICATION FOLDER AND ITS SUB-PAGES 
+-> submit application by job seeker -> write in application.jsx 
+-> for viewing your application 
